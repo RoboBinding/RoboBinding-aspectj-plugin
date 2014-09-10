@@ -2,8 +2,9 @@ apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
-sourceCompatibility = 1.7
-version = '0.8.0'
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+version = '0.8.1'
 archivesBaseName = 'aspectj-plugin'
 group = 'org.robobinding'
 
@@ -12,6 +13,7 @@ repositories {
 }
 
 ext {
+	//aspectjVersion = '1.8.2'
 	aspectjVersion = '1.6.11'
 }
 

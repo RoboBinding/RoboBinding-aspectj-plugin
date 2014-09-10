@@ -20,10 +20,13 @@ import org.gradle.api.internal.file.collections.DirectoryFileTree;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.compile.AbstractCompile;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 /**
  * @author Cheng Wei
@@ -37,22 +40,29 @@ public class AspectJCompile extends AbstractCompile {
 	@TaskAction
 	public void compile() {
 		Logger log = getProject().getLogger();
-		String[] args = { 
-				"-encoding", "UTF-8", 
-				"-source", getSourceCompatibility(), 
+		List<String> args = Lists.newArrayList(
+				"-encoding", "UTF-8",
+				"-source", getSourceCompatibility(),
 				"-target", getTargetCompatibility(),
-				"-aspectpath", getAspectPath().getAsPath(), 
 				"-d", getDestinationDir().getAbsolutePath(), 
-				"-classpath", getClasspath().getAsPath(), 
-				"-bootclasspath", bootClasspath,
-				"-sourceroots", getSourceRoots() 
-		};
+				"-classpath", getClasspath().getAsPath(),
+				"-sourceroots", getSourceRoots());
+		
+		if(!getAspectPath().isEmpty()) {
+			args.add("-aspectpath");
+			args.add(getAspectPath().getAsPath());
+		}
+		
+		if(!Strings.isNullOrEmpty(bootClasspath)) {
+			args.add("-bootclasspath");
+			args.add(bootClasspath);
+		}
 
-		log.debug("ajc args: {}", Joiner.on(" ").join(args));
+		log.debug("Before executing: ajc {}", Joiner.on(" ").join(args));
 
 		MessageHandler messageHandler = new MessageHandler(true);
 		messageHandler.setInterceptor(new GradleMessageHandler(log));
-		new Main().run(args, messageHandler);
+		new Main().run(args.toArray(new String[0]), messageHandler);
 		abartWhenError(messageHandler);
 	}
 
@@ -103,7 +113,7 @@ public class AspectJCompile extends AbstractCompile {
 		this.inpath = inpath;
 	}
 
-	@Input
+	@Input@Optional
 	public String getBootClasspath() {
 		return bootClasspath;
 	}

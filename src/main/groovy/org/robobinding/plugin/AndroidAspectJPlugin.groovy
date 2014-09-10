@@ -33,37 +33,13 @@ class AndroidAspectJPlugin implements Plugin<Project> {
             throw new GradleException("The 'com.android.application' or 'com.android.library' plugin is required.")
         }
 		
-		createConfigurations(project.configurations);
+		AspectJPluginHelper helper = new AspectJPluginHelper(project)
+		helper.setupConfigurations()
 		
 		project.afterEvaluate {
 			variants.all { variant ->
-				String variantName = variant.name.capitalize()
-				String taskName = "compile${variantName}AspectJ"
-				project.tasks.create(name: taskName, , type: AspectJCompile) {
-					description = 'Compiles source code with AspectJ Compiler';
-					group = 'build'
-					
-					sourceCompatibility = javaCompile.sourceCompatibility
-					targetCompatibility = javaCompile.targetCompatibility
-					source = javaCompile.source
-					destinationDir = javaCompile.destinationDir
-					classpath = javaCompile.classpath
-					bootClasspath = evaluateAndroidBootClasspath(plugin)
-					aspectPath = project.configurations.aspectPath
-					inpath = project.configurations.ajInpath
-				}
-				
-				project.tasks."$taskName".setDependsOn(variant.javaCompile.dependsOn)
-				variant.javaCompile.deleteAllActions()
-				variant.javaCompile.dependsOn project.tasks."$taskName"
-			}
-		}
-	}
-	
-	private void createConfigurations(ConfigurationContainer configurations) {
-		for(configuration in ['aspectPath', 'ajInpath']) {
-			if (configurations.findByName(configuration) == null) {
-				configurations.create(configuration)
+				helper.createAspectJCompileTask(variant.name, variant.javaCompile, 
+					variant.javaCompile.source, evaluateAndroidBootClasspath(plugin))
 			}
 		}
 	}

@@ -2,11 +2,11 @@
 <metadata>
   <groupId>org.robobinding</groupId>
   <artifactId>aspectj-plugin</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1</version>
   <versioning>
     <versions>
-      <version>0.8.0</version>
+      <version>0.8.1</version>
     </versions>
-    <lastUpdated>20140907013727</lastUpdated>
+    <lastUpdated>20140910015528</lastUpdated>
   </versioning>
 </metadata>

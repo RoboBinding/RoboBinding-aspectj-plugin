@@ -4,7 +4,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
-version = '0.8.1'
+version = '0.8.2'
 archivesBaseName = 'aspectj-plugin'
 group = 'org.robobinding'
 
@@ -13,8 +13,8 @@ repositories {
 }
 
 ext {
-	//aspectjVersion = '1.8.2'
-	aspectjVersion = '1.6.11'
+	aspectjVersion = '1.8.2'
+	//aspectjVersion = '1.6.11'
 }
 
 dependencies {

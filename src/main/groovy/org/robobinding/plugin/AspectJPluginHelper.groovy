@@ -29,28 +29,30 @@ class AspectJPluginHelper {
 	}
 	
 	void createAspectJCompileTask(String taskVariant, 
-		JavaCompile javaCompileToReplace, FileTree theSource, String theBootClasspath) {
+		JavaCompile javaCompile, FileTree theSource, String theBootClasspath) {
 	
 		String variantName = taskVariant.capitalize()
 		String taskName = "compile${variantName}AspectJ"
 		
-		project.tasks.create(name: taskName, , type: AspectJCompile) {
+		def aspectJCompile = project.tasks.create(name: taskName, , type: AspectJCompile) {
 			description = 'Compiles source code with AspectJ Compiler';
 			group = 'build'
 			
-			sourceCompatibility = javaCompileToReplace.sourceCompatibility
-			targetCompatibility = javaCompileToReplace.targetCompatibility
+			sourceCompatibility = javaCompile.sourceCompatibility
+			targetCompatibility = javaCompile.targetCompatibility
 			source = theSource
-			destinationDir = javaCompileToReplace.destinationDir
-			classpath = javaCompileToReplace.classpath
+			destinationDir = javaCompile.destinationDir
+			classpath = javaCompile.classpath
 			bootClasspath = theBootClasspath
 			aspectPath = project.configurations.aspectPath
 			inpath = project.configurations.ajInpath
 		}
 		
-		project.tasks."$taskName".setDependsOn(javaCompileToReplace.dependsOn)
-		javaCompileToReplace.deleteAllActions()
-		javaCompileToReplace.dependsOn project.tasks."$taskName"
+		aspectJCompile.dependsOn(javaCompile)
+		javaCompile.finalizedBy(aspectJCompile)
+		//project.tasks."$taskName".setDependsOn(javaCompileToReplace.dependsOn)
+		//javaCompileToReplace.deleteAllActions()
+		//javaCompileToReplace.dependsOn project.tasks."$taskName"
 	}
 
 }

@@ -4,7 +4,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
-version = '0.8.3'
+version = '0.8.4'
 archivesBaseName = 'aspectj-plugin'
 group = 'org.robobinding'
 
@@ -13,14 +13,13 @@ repositories {
 }
 
 ext {
-	aspectjVersion = '1.8.2'
-	//aspectjVersion = '1.6.11'
+	aspectjVersion = '1.8.3'
 }
 
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
-	compile 'com.android.tools.build:gradle:0.12.+';
+	compile 'com.android.tools.build:gradle:1.0.0';
 	compile "org.aspectj:aspectjtools:${aspectjVersion}"
 	
     testCompile group: 'junit', name: 'junit', version: '4.+'

@@ -8,6 +8,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.compile.JavaCompile
 
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
@@ -39,18 +40,24 @@ class AndroidAspectJPlugin implements Plugin<Project> {
 		project.afterEvaluate {
 			variants.all { variant ->
 				helper.createAspectJCompileTask(variant.name, variant.javaCompile, 
-					variant.javaCompile.source, evaluateAndroidBootClasspath(plugin))
+					variant.javaCompile.source, evaluateAndroidBootClasspath(plugin,project))
 			}
 		}
 	}
 	
-	private String evaluateAndroidBootClasspath(Plugin<?> plugin) {
+	private String evaluateAndroidBootClasspath(Plugin<?> basePlugin, Project project) {
 		List<String> bootClasspath
-		if (plugin.properties['runtimeJarList']) {
-			bootClasspath = plugin.runtimeJarList
-		} else {
-			bootClasspath = plugin.bootClasspath
-		}
+		BaseExtension baseExtension = project.getExtensions().getByName("android") as BaseExtension
+
+		if (basePlugin.getMetaClass().getMetaMethod("getRuntimeJarList")) {
+	      bootClasspath = basePlugin.getRuntimeJarList()
+	    }
+	    else if (baseExtension.getMetaClass().getMetaMethod("getBootClasspath")) {
+	      bootClasspath = baseExtension.getBootClasspath()
+	    }
+	    else {
+	      bootClasspath= basePlugin.getBootClasspath()
+	    }
 		
 		return bootClasspath.join(File.pathSeparator)
 	}

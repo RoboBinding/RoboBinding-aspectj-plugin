@@ -2,9 +2,9 @@ apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
-sourceCompatibility = 1.5
-targetCompatibility = 1.5
-version = '0.8.4'
+sourceCompatibility = JavaVersion.VERSION_1_5
+targetCompatibility = JavaVersion.VERSION_1_5
+version = '0.8.5'
 archivesBaseName = 'aspectj-plugin'
 group = 'org.robobinding'
 

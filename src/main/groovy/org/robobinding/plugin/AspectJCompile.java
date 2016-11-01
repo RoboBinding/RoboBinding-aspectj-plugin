@@ -83,7 +83,13 @@ public class AspectJCompile extends AbstractCompile {
 			@SuppressWarnings("unchecked")
 			Collection<DirectoryFileTree> dirFileTrees = (Collection<DirectoryFileTree>)method.invoke(getSource(), new Object[0]);
 			for (DirectoryFileTree dirFileTree : dirFileTrees) {
-				sourceRoots.add(dirFileTree.getDir().getAbsolutePath());
+				String sourceRoot = dirFileTree.getDir().getAbsolutePath();
+				File file = new File(sourceRoot);
+				if (!file.exists()) {
+					getLogger().warn("Skipped a non-existent source code root directory: " + sourceRoot);
+					continue;
+				}
+				sourceRoots.add(sourceRoot);
 			}
 			return Joiner.on(File.pathSeparator).join(sourceRoots);
 		} catch (NoSuchMethodException e) {
